@@ -1,0 +1,248 @@
+{
+  "info": {
+    "_postman_id": "2bc31bbb-e22d-481d-af24-a2662a56861e",
+    "name": "mosca",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58207616",
+    "_collection_link": "https://go.postman.co/collection/58207616-2bc31bbb-e22d-481d-af24-a2662a56861e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Todos los usuarios",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8080/todosUsu",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "todosUsu"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar usuario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8080/2",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "eliminarUser",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"user\": \"adfasdf\", //EL USER QUE PASE TIENE QUE SER ADMIN, SI NO NO FUNCA\r\n    \"pass\": \"asdfasdfasdf\"\r\n    //\"user\": \"holi\",\r\n    //\"pass\": \"asdf\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8080/2",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "crearTablero",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"user\": \"holas\",//usuario\r\n    \"pass\": \"asdfg\",//contraseña\r\n    \"intentos\" : 3\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8080/crear",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "crear"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "login/jugar",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"user\": \"holas\",\r\n    \"pass\": \"asdfg\",// EL USER TIENE QUE SER UN JUGADOR NORMAL, SI NO NO FUNCA\r\n    \"casilla\": 4\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8080/login/jugar",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "login",
+            "jugar"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "registrarUsuario",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"user\" : \"holi\",\r\n    \"pass\" : \"asdf\",\r\n    \"email\" : \"sdafadsf@ejemplo.com\",\r\n    \"edad\" : 19\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8080/register",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "rendirse",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"user\" : \"holas\",\r\n    \"pass\" : \"asdfg\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8080/rendirse",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "rendirse"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "consultarPartida",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"user\": \"holas\",//usuario\r\n    \"pass\": \"asdfg\"//contraseña\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8080/consultar",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "consultar"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "cambiarRol",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"user\" : \"holi\",\r\n    \"pass\" : \"asdf\" //los parámetros deben ser de inicio de sesión de un admin\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8080/cambiarRol/admin/2",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "cambiarRol",
+            "admin",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
