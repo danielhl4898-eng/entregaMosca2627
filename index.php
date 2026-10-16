@@ -16,6 +16,8 @@ al registrarse un jugador nuevo, tiene que ser como jugador
 necesitamos tabla usuarios (idUsu, idRol, nombre, etc) tabla roles(idRol, nombre, desc) tabla tableros(idTablero, tabl, activo, idUsu)
 */
 header("Content-Type: application/json");
+require_once 'phpmailer/src/PHPMailer.php';
+require_once 'phpmailer/src/SMTP.php';
 require_once("auxiliar.php");
 require_once("controllers/controller.php");
 require_once("Database/database.php");
@@ -25,13 +27,14 @@ $db = new Database();
 $dao = new DAO($db);
 $contr = new controller($dao);
 $contrJ = new controladorJuego($dao);
+$mail = new PHPMailer();
 $verbo = $_SERVER["REQUEST_METHOD"];
 $url = $_SERVER["REQUEST_URI"];
 $jsonpar= file_get_contents("php://input");
 $parametros= json_decode($jsonpar, true);
 
 if($verbo !="POST"&&$verbo !="PATCH"&&$verbo !="GET"&&$verbo !="DELETE"){
-    auxiliar::metodoNP();//done
+    auxiliar::metodoNP();
 }else{
     $opciones = explode("/", $url);
     unset($opciones[0]);
@@ -43,7 +46,10 @@ if($verbo !="POST"&&$verbo !="PATCH"&&$verbo !="GET"&&$verbo !="DELETE"){
             $contr->casoDELETE($opciones, $parametros);
             break;
         case "POST":
-            $contr-> casoPOST($opciones, $parametros, $contrJ);
+            $contr-> casoPOST($opciones, $parametros, $contrJ, $mailer);
+            break;
+        case "PATCH":
+            $contr->casoPATCH($opciones, $parametros);
             break;
     }
 }

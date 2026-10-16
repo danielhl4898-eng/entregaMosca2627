@@ -6,18 +6,19 @@ class DAO{
         $this->db = $db;
     }
     public function registrarUsuario($parametros){
+        $passwdhashed= md5($parametros["pass"]);
         $conexion = $this -> db ->connect();
         $stmt = $conexion -> prepare("INSERT INTO usuarios (user, edad, email, pass) VALUES (?,?,?,?)");
-        $resultado = $stmt -> execute([$parametros["user"], $parametros["edad"], $parametros["email"], $parametros["pass"]]);
+        $resultado = $stmt -> execute([$parametros["user"], $parametros["edad"], $parametros["email"], $passwdhashed]);
         $conexion -> close();
         return $resultado;
     }
     public function esAdmin($parametros){
-        $conexion = $this->db->connect();
+        $passwdhashed= md5($parametros["pass"]);
         $stmt = $conexion->prepare("SELECT idRol FROM usuarios WHERE user LIKE UPPER(?) AND pass LIKE UPPER(?)");
-        $stmt->execute([$parametros["user"], $parametros["pass"]]);
+        $stmt->execute([$parametros["user"], $passwdhashed]);
         $fila = $stmt->get_result()->fetch_assoc();
-        $idRol = $fila["idRol"] ?? null;
+        $idRol = $fila["idRol"];
         $conexion->close();
         if ($idRol == 2) {
             return true;
@@ -48,11 +49,22 @@ class DAO{
         $conexion->close();
         return $usuario;
     }
+
+    public function devolverEmailUsuarioPorId($id){
+        $conexion = $this->db->connect();
+        $stmt = $conexion->prepare("SELECT email FROM usuarios WHERE id = ?");
+        $stmt->execute([$id]);
+        $emailUsu = $stmt->get_result()->fetch_assoc();
+        $conexion->close();
+        return $emailUsu;
+    }
+
     public function comprobarLogin($parametros){
+        $passwdhashed = md5($parametros["pass"]);
         $conexion = $this->db->connect();
         $stmt = $conexion->prepare("SELECT * FROM usuarios 
-        WHERE UPPER(user) LIKE ? AND UPPER(pass) LIKE ?;");
-        $existe = $stmt->execute([$parametros["user"], $parametros["pass"]]);
+        WHERE UPPER(user) LIKE UPPER(?) AND UPPER(pass) LIKE UPPER(?);");
+        $existe = $stmt->execute([$parametros["user"], $passwdhashed]);
         $usuarioL = $stmt->get_result()->fetch_assoc();
         $conexion->close();
         if($existe && $usuarioL["idRol"] !=2){ //comprueba que no sea admin
@@ -60,12 +72,14 @@ class DAO{
         }else{
             return false;
         }
+        return null;
     }
     public function devolverIDUsuario($parametros){
+        $passwdhashed=md5($parametros["pass"]);
         $conexion = $this->db->connect();
         $stmt = $conexion->prepare("SELECT id FROM usuarios 
         WHERE UPPER(user) LIKE ? AND UPPER(pass) LIKE ?; ");
-        $stmt->execute([$parametros["user"], $parametros["pass"]]);
+        $stmt->execute([$parametros["user"], $passwdhashed]);
         $idUsu=$stmt->get_result()->fetch_assoc();
         $conexion->close();
         return $idUsu["id"];
@@ -124,7 +138,40 @@ class DAO{
         $stmt->execute([$idUsu]);
         $conexion->close();
     }
+    public function comprobarLoginNombreUsu($parametros){
+        $conexion = $this->db->connect();
+        $stmt = $conexion->prepare("SELECT * FROM usuarios 
+        WHERE UPPER(user) LIKE UPPER(?);");
+        $existe = $stmt->execute([$parametros["user"]]);
+        $usuarioL = $stmt->get_result()->fetch_assoc();
+        $conexion->close();
+        if(count($usuarioL) == 1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public function cambiarContrasenia($idUsu, $contraNueva){
+        $passwdhashed=md5($contraNueva);
+        $conexion= $this->db->connect();
+        $stmt= $conexion->prepare("UPDATE usuarios SET pass= ? WHERE id = ?;");
+        $stmt->execute([$passwdhashed, $idUsu]);
+        $conexion->close();
+    }
 
+    public function cambiarPass($idUsu, $contraNueva){
+        $contraHashed= md5($contraNueva);
+        $conexion = $this->db->connect();
+        $stmt = $conexion->prepare("UPDATE usuarios SET pass = ? WHERE id = ?;");
+        $stmt->execute([$contraHashed, $idUsu]);
+        $conexion->close();
+    }
+    public function cambiarEmail($idUsu, $correoNuevo){
+        $conexion= $this->db->connect();
+        $stmt = $conexion->prepare("UPDATE usuarios SET email = ? WHERE id = ?;");
+        $stmt->execute([$correoNuevo, $idUsu]);
+        $conexion->close();
+    }
 }
 
 ?>
