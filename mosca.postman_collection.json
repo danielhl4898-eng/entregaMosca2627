@@ -59,7 +59,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"user\": \"adfasdf\", //EL USER QUE PASE TIENE QUE SER ADMIN, SI NO NO FUNCA\r\n    \"pass\": \"asdfasdfasdf\"\r\n    //\"user\": \"holi\",\r\n    //\"pass\": \"asdf\"\r\n}",
+          "raw": "{\r\n    \"user\": \"adsf\", //EL USER QUE PASE TIENE QUE SER ADMIN, SI NO NO FUNCA\r\n    \"pass\": \"asdfg\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -67,13 +67,13 @@
           }
         },
         "url": {
-          "raw": "localhost:8080/2",
+          "raw": "localhost:8080/3",
           "host": [
             "localhost"
           ],
           "port": "8080",
           "path": [
-            "2"
+            "3"
           ]
         }
       },
@@ -86,7 +86,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"user\": \"holas\",//usuario\r\n    \"pass\": \"asdfg\",//contraseña\r\n    \"intentos\" : 3\r\n}",
+          "raw": "{\r\n    \"user\": \"asdf\",//usuario\r\n    \"pass\": \"asdf\",//contraseña\r\n    \"tam\": 12,\r\n    \"intentos\" : 3\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -113,7 +113,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"user\": \"holas\",\r\n    \"pass\": \"asdfg\",// EL USER TIENE QUE SER UN JUGADOR NORMAL, SI NO NO FUNCA\r\n    \"casilla\": 4\r\n}",
+          "raw": "{\r\n    \"user\": \"asdf\",\r\n    \"pass\": \"adsfg\"// EL USER TIENE QUE SER UN JUGADOR NORMAL, SI NO NO FUNCA\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -141,7 +141,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"user\" : \"holi\",\r\n    \"pass\" : \"asdf\",\r\n    \"email\" : \"sdafadsf@ejemplo.com\",\r\n    \"edad\" : 19\r\n}",
+          "raw": "{\r\n    \"user\" : \"adfasdf\",\r\n    \"pass\" : \"asdfasdfasdf\",\r\n    \"email\" : \"sdafadsf@ejemplo.com\",\r\n    \"edad\" : 19\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -156,89 +156,6 @@
           "port": "8080",
           "path": [
             "register"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "rendirse",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"user\" : \"holas\",\r\n    \"pass\" : \"asdfg\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "localhost:8080/rendirse",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "rendirse"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "consultarPartida",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"user\": \"holas\",//usuario\r\n    \"pass\": \"asdfg\"//contraseña\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "localhost:8080/consultar",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "consultar"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "cambiarRol",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"user\" : \"holi\",\r\n    \"pass\" : \"asdf\" //los parámetros deben ser de inicio de sesión de un admin\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "localhost:8080/cambiarRol/admin/2",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "cambiarRol",
-            "admin",
-            "2"
           ]
         }
       },

@@ -3,33 +3,36 @@ require_once(__DIR__."/../auxiliar.php");
 require_once(__DIR__."/controladorJuego.php");
 class controller{
     private $dao;
-
     public function __construct($dao){
         $this->dao=$dao;
     }
-
-    public function casoPOST($opciones, $parametros, $contrJ){
+    public function casoPOST($opciones, $parametros, $contrJ, $mailer){
         switch($opciones[1]){
             case "register":
-                $hecho=$this->dao->registrarUsuario($parametros);
-                if(!$hecho){
-                    auxiliar::datosInvalidos();
+                //Para registrar usuario, primero compruebo que no exista ningún usuario con el mismo nombre, y si ya hay uno con el mismo campo user, salta el aviso
+                $yaExiste = $this->dao->comprobarLoginNombreUsu($parametros);
+                if($yaExiste){
+                    auxiliar::yaExisteUser();
                 }else{
-                    auxiliar::hecho();
+                    $hecho=$this->dao->registrarUsuario($parametros);
+                    if(!$hecho){
+                        auxiliar::datosInvalidos();
+                    }else{
+                        auxiliar::hecho();
+                    }
                 }
                 break;
             case "login":
                 $loggeao = $this->dao->comprobarLogin($parametros);//compruebo que existe el usuario
                 if($loggeao){
-
                     $idUsuarioLogged = $this->dao->devolverIDUsuario($parametros);//consigo el ID del usuario que se ha loggeado
-                    $esAdmin=$this->dao->esAdmin($parametros);//si es admin no puede jugar xd
+                    $esAdmin=$this->dao->esAdmin($parametros);//si es admin no puede jugar
 
                     if(!$esAdmin){
 
                         $partida=$this->dao->tienePartidas($idUsuarioLogged);//meto el ID del usuario para ver su partida activa
                         if($partida!=null && $opciones[2] == "jugar"){
-                            $contrJ->jugar($partida, $parametros);//en teoría entra la fila de la tabla tableros entera, pero aún tengo que comprobarlo
+                            $contrJ->jugar($partida, $parametros);//entra la fila de la tabla tableros entera
                         }else if($opciones[2]!= "jugar"){
                             auxiliar::opcionEq(); 
                         }else if($partida == null){
@@ -61,6 +64,7 @@ class controller{
 
                 break;
             case "rendirse":
+                //comprueba si el login es correcto, y si lo es, busca las partidas que tenga activas, si tiene partidas, las termina y le muestra la posicion de la mosca
                 $loggeao = $this->dao->comprobarLogin($parametros);
                 if($loggeao){
                     $idUsuarioLoggeado = $this->dao->devolverIDUsuario($parametros);
@@ -75,14 +79,13 @@ class controller{
                     auxiliar::loginIncorrecto();
                 }
                 break;
-            case "cambiarRol":
+            case "cambiarRol"://la URL tiene que tener POST: localhost:8080/cambiarRol/(admin||jugador)/{idUsuarioAdmin}
                 $esAdmin = $this->dao->esAdmin($parametros);
                 if($esAdmin){
-                    
-                    if($esAdmin && $opciones[2] == "admin"){
+                    if($opciones[2] == "admin"){
                         $this->dao->cambiarAAdmin($opciones[3]);
                         auxiliar::cambioCorrecto();
-                    }else if($esAdmin && $opciones[2] == "jugador"){
+                    }else if($opciones[2] == "jugador"){
                         $this->dao->cambiarAJugador($opciones[3]);
                         auxiliar::cambioCorrecto();
                     }
@@ -93,8 +96,42 @@ class controller{
                     auxiliar::loginIncorrecto();
                 }
                 break;
+            case "olvido"://la URL tiene que tener POST: localhost:8080/olvido/{id}
+                $idUsuarioEnviar= $opciones[2];
+                $emailUsuario=$this->dao->devolverEmailUsuarioPorId($idUsuarioEnviar);
+                $contraseniaNuevaArray= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                $contraseniaNueva=substr(str_shuffle($contraseniaNuevaArray), 0, 12);
+                if($emailUsuario!=null){
+                    $this->enviarCorreo($mailer, $emailUsuario, $contraseniaNueva);
+                    $this->dao->cambiarContrasenia($idUsuarioEnviar, $contraseniaNueva);
+                }else{
+                    auxiliar::errorCorreoInvalido();
+                }
+                break;
             }
         
+    }
+    public function enviarCorreo($mailer, $emailUsuario, $contraseniaNueva){
+        $mailer->isSMTP();
+        $mailer->Host= "smtp.gmail.com";
+        $mailer->SMTPAuth= true;
+        $mailer->Username=getenv("MAIL_PROPIO");
+        $mailer->Password= getenv("SMTP_PASSWORD");
+        $mailer->SMTPSecure=PHPMailer::ENCRYPTION_SMTPS;
+        $mailer->Port = 465;
+
+        $mailer->setFrom(getenv("MAIL_PROPIO"), "Mosca Daniel Hergueta");
+        $mailer->addAddress($emailUsuario);
+        $mailer->isHTML(true);
+        $mailer->Subject='Cambio de contraseña';
+        $mailer->Body='Tu contraseña <b>nueva</b> es: <br>'. $contraseniaNueva;
+        $mailer->AltBody='Tu contraseña nueva es: '. $contraseniaNueva;
+        $enviado=$mailer->send();
+        if($enviado){
+            auxiliar::correoEnviado();
+        }else{
+            auxiliar::errorCorreo();
+        }
     }
 
     public function casoGET($opcion, $parametros){
@@ -126,9 +163,40 @@ class controller{
         }else{
             auxiliar::error();
         }
-        
     }
-
+    public function casoPATCH($opciones, $parametros){
+        switch($opciones[1]){
+            case "pass":
+                $loginCorrecto=$this->dao->comprobarLogin($parametros);
+                if($loginCorrecto){
+                    $idUsu = $this->dao->devolverIDUsuario($parametros);
+                    if($idUsu == null){
+                        auxiliar::error();
+                    }else{
+                        $this->dao->cambiarPass($idUsu, $parametros["passNueva"]);
+                        auxiliar::contraCambiada();
+                    }
+                }
+                else{
+                    auxiliar::loginIncorrecto();
+                }
+                break;
+            case "email":
+                $loginCorrecto=$this->dao->comprobarLogin($parametros);
+                if($loginCorrecto){
+                    $idUsu = $this->dao->devolverIDUsuario($parametros);
+                    if($idUsu == null){
+                        auxiliar::error();
+                    }else{
+                        $this->dao->cambiarEmail($idUsu, $parametros["emailNuevo"]);
+                        auxiliar::emailCambiado();
+                    }
+                }else{
+                    auxiliar::loginIncorrecto();
+                }
+                break;
+        }
+    }
     public function mostrarUsuarios(){
         $usuarios = $this->dao->selectUsers();
         if($usuarios == null){
@@ -137,7 +205,6 @@ class controller{
             echo json_encode($usuarios);
         }
     }
-
     public function eliminarUsu($idUsuAEliminar, $parametros){
         $esAdmin=$this->dao->esAdmin($parametros);
         if($esAdmin){
@@ -147,20 +214,13 @@ class controller{
             auxiliar::soloAdmin();
         }
     }
-
     public function mostrarInfoUsuario($idUsuAMostrar){
         $usuario=$this->dao->mostrarUsuarioPorID($idUsuAMostrar);
         if($usuario == null){
-            Auxiliar::error(); //este se queda así xd
+            Auxiliar::error();
         }else{
             echo json_encode($usuario);
-        }
-        
+        }  
     }
-
 }
-
-
-
-
 ?>

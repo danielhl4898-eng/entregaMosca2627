@@ -105,6 +105,48 @@ class Auxiliar{
         "mensaje"=> "Se ha completado el cambio correctamente"
     ]);
    }
+   static function yaExisteUser(){
+    http_response_code(409);
+    echo json_encode([
+        "ok"=> false,
+        "mensaje"=> "Ya existe un usuario con ese nombre"
+    ]);
+   }
+   static function errorCorreoInvalido(){
+    http_response_code(401);
+    echo json_encode([
+        "ok"=>false,
+        "mensaje"=> "Correo inválido"
+    ]);
+   }
+   static function errorCorreo(){
+    http_response_code(400);
+    echo json_encode([
+        "ok"=>false,
+        "mensaje"=> "Ha sucedido un error al enviar el correo"
+    ]);
+   }
+   static function correoEnviado(){
+    http_response_code(200);
+    echo json_encode([
+        "ok"=>true,
+        "mensaje"=> "Se ha enviado el correo correctamente"
+    ]);
+   }
+   static function contraCambiada(){
+    http_response_code(201);
+    echo json_encode([
+        "ok"=>true,
+        "mensaje"=> "Se ha cambiado la contraseña correctamente"
+    ]);
+   }
+   static function emailCambiado(){
+    http_response_code(201);
+    echo json_encode([
+        "ok"=>true,
+        "mensaje"=> "Se ha cambiado la contraseña correctamente"
+    ]);
+   }
 }
 
 ?>
