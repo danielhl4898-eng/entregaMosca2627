@@ -144,7 +144,7 @@ class Auxiliar{
     http_response_code(201);
     echo json_encode([
         "ok"=>true,
-        "mensaje"=> "Se ha cambiado la contraseña correctamente"
+        "mensaje"=> "Se ha cambiado el correo correctamente"
     ]);
    }
 }

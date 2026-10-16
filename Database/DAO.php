@@ -15,6 +15,7 @@ class DAO{
     }
     public function esAdmin($parametros){
         $passwdhashed= md5($parametros["pass"]);
+        $conexion = $this->db->connect();
         $stmt = $conexion->prepare("SELECT idRol FROM usuarios WHERE user LIKE UPPER(?) AND pass LIKE UPPER(?)");
         $stmt->execute([$parametros["user"], $passwdhashed]);
         $fila = $stmt->get_result()->fetch_assoc();
@@ -56,7 +57,7 @@ class DAO{
         $stmt->execute([$id]);
         $emailUsu = $stmt->get_result()->fetch_assoc();
         $conexion->close();
-        return $emailUsu;
+        return $emailUsu["email"];
     }
 
     public function comprobarLogin($parametros){
@@ -145,7 +146,7 @@ class DAO{
         $existe = $stmt->execute([$parametros["user"]]);
         $usuarioL = $stmt->get_result()->fetch_assoc();
         $conexion->close();
-        if(count($usuarioL) == 1){
+        if(count($usuarioL) > 1){
             return true;
         }else{
             return false;
